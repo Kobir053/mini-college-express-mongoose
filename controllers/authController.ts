@@ -15,7 +15,8 @@ export async function register (req: Request, res: Response, next: NextFunction)
         const addedUser = await userModel.create(newUser);
         res.status(201).json({data: addedUser, success: true});
 
-    } catch (error: any) {
+    } 
+    catch (error: any) {
         next(error);
     }
 }
@@ -41,7 +42,8 @@ export async function login (req: Request, res: Response, next: NextFunction) {
 
         res.status(404).json({message: "user not founded", success: false});
 
-    } catch (error: any) {
+    } 
+    catch (error: any) {
         next(error);
     }
 }

@@ -2,6 +2,7 @@ import express, { Application } from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRouter.js";
+import teacherRouter from "./routes/teacherRouter.js";
 import errorHandler from "./middlewares/errorHandler.js";
 
 dotenv.config();
@@ -14,6 +15,8 @@ connectDB();
 app.use(express.json());
 
 app.use("/", authRouter);
+
+app.use("/teacher", teacherRouter);
 
 app.use(errorHandler);
 
