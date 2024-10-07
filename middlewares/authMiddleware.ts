@@ -18,12 +18,46 @@ export async function teacherMiddleWare (req: Request, res: Response, next: Next
         const teacher = await userModel.findById(decoded.id);
 
         if(!teacher){
-            res.status(404).json({message: "the token you have shows that you no longer loged in"});
+            res.status(404).json({message: "the token you have shows that you no longer register"});
             return;
         }
 
         if(teacher.role !== "teacher"){
             res.status(403).json({message: "you are not a teacher so you don't have access to the student's details"});
+            return;
+        }
+
+        next();
+    } 
+    catch (error: any) {
+        res.status(403).json({message:"Invalid token, the error is: " + error.message});
+    }
+}
+
+export async function studentMiddleware (req: Request, res: Response, next: NextFunction) {
+
+    if(!req.cookies["token"]){
+        res.status(401).json({message: "you don't have a token cookie!"});
+        return;
+    }
+
+    if(!req.body.id){
+        res.status(400).json({message: "you have to enter your id"});
+        return;
+    }
+    
+    try {
+        const studentToken = req.cookies["token"];
+        let decoded = jwt.verify(studentToken, JWT_SECRET) as {id: string, iat: number, exp: number};
+        const student = await userModel.findById(decoded.id);
+
+        if(!student){
+            res.status(404).json({message: "the token you have shows that you no longer register"});
+            return;
+        }
+
+        if(student._id !== req.body.id){
+            res.status(403).json({message: "you don't have access to another students account!"});
             return;
         }
 
