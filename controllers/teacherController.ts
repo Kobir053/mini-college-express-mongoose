@@ -120,3 +120,55 @@ export async function getAllStudents (req: Request, res: Response, next: NextFun
         next(error);
     }
 }
+
+export async function deleteStudent (req: Request, res: Response, next: NextFunction) {
+    if(!req.body.id){
+        res.status(400).json({message: "you need to enter the student's id"});
+        return;
+    }
+    
+    try {
+        const user = await userModel.findById(req.body.id);
+        if(!user){
+            res.status(404).json({message: "user are not found"});
+            return;
+        }
+        if(user.role !== "student"){
+            res.status(400).json({message: "you can only delete students"});
+            return;
+        }
+
+        const deleted = await userModel.findByIdAndDelete(req.body.id);
+        res.status(200).json({message: "deleted successfully", deleted: deleted, success: true});
+    } 
+    catch (error: any) {
+        next(error);
+    }
+}
+
+export async function getAverageOfGrades (req: Request, res: Response, next: NextFunction) {
+
+    if(!req.body.id){
+        res.status(400).json({message: "you need to enter the student's id"});
+        return;
+    }
+
+    try {
+        const studentId = req.body.id;
+        const student = await userModel.findById(studentId);
+
+        if(!student){
+            res.status(404).json({message: `could not find student with id ${studentId}`});
+            return;
+        }
+        let sum = 0;
+        student.grades.forEach((grade) => {
+            sum += grade;
+        });
+        let avg = sum/student.grades.length;
+        res.status(200).json({average_of_grades: avg, success: true});
+    } 
+    catch (error: any) {
+        next(error);
+    }
+}

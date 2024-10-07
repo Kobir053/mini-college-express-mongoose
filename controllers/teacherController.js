@@ -117,3 +117,27 @@ export function getAllStudents(req, res, next) {
         }
     });
 }
+export function deleteStudent(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.body.id) {
+            res.status(400).json({ message: "you need to enter the student's id" });
+            return;
+        }
+        try {
+            const user = yield userModel.findById(req.body.id);
+            if (!user) {
+                res.status(404).json({ message: "user are not found" });
+                return;
+            }
+            if (user.role !== "student") {
+                res.status(400).json({ message: "you can only delete students" });
+                return;
+            }
+            const deleted = yield userModel.findByIdAndDelete(req.body.id);
+            res.status(200).json({ message: "deleted successfully", deleted: deleted, success: true });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}
