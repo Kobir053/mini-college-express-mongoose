@@ -29,7 +29,7 @@ export async function login (req: Request, res: Response, next: NextFunction) {
         const foundedUser = await userModel.findOne({passportId: userPassport});
 
         if(foundedUser && await bcrypt.compare(userPassword, foundedUser.password)){
-            const token = jwt.sign({passportId: userPassport, password: userPassword}, JWT_SECRET, {expiresIn: "1h"});
+            const token = jwt.sign({id: foundedUser._id}, JWT_SECRET, {expiresIn: "1h"});
 
             res.cookie('token', token, {
                 maxAge: 3600000, // 1 hour in milliseconds

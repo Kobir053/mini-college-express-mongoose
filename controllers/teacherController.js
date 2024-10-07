@@ -141,3 +141,28 @@ export function deleteStudent(req, res, next) {
         }
     });
 }
+export function getAverageOfGrades(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!req.body.id) {
+            res.status(400).json({ message: "you need to enter the student's id" });
+            return;
+        }
+        try {
+            const studentId = req.body.id;
+            const student = yield userModel.findById(studentId);
+            if (!student) {
+                res.status(404).json({ message: `could not find student with id ${studentId}` });
+                return;
+            }
+            let sum = 0;
+            student.grades.forEach((grade) => {
+                sum += grade;
+            });
+            let avg = sum / student.grades.length;
+            res.status(200).json({ average_of_grades: avg, success: true });
+        }
+        catch (error) {
+            next(error);
+        }
+    });
+}

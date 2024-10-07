@@ -33,7 +33,7 @@ export function login(req, res, next) {
             const userPassword = req.body.password;
             const foundedUser = yield userModel.findOne({ passportId: userPassport });
             if (foundedUser && (yield bcrypt.compare(userPassword, foundedUser.password))) {
-                const token = jwt.sign({ passportId: userPassport, password: userPassword }, JWT_SECRET, { expiresIn: "1h" });
+                const token = jwt.sign({ id: foundedUser._id }, JWT_SECRET, { expiresIn: "1h" });
                 res.cookie('token', token, {
                     maxAge: 3600000, // 1 hour in milliseconds
                     sameSite: 'strict', // Strict cross-site cookie policy
