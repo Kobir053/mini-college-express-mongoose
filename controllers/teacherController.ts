@@ -167,18 +167,16 @@ export async function getAverageOfGrades(req: Request, res: Response, next: Next
             return;
         }
 
-        const bla = await userModel.aggregate([
-            { $match: { id: student._id as mongoose.Types.ObjectId} },
+        const avg = await userModel.aggregate([
+            { $match: { _id: student._id} },
             { $project: { _id: 0, avgGrades: { $avg: "$grades.grade" } } }
         ]);
-        console.log(bla);
 
-
-        let sum = 0;
-        student.grades.forEach((grade: { subject: string, grade: number }) => {
-            sum += grade.grade;
-        });
-        let avg = sum / student.grades.length;
+        // let sum = 0;
+        // student.grades.forEach((grade: { subject: string, grade: number }) => {
+        //     sum += grade.grade;
+        // });
+        // let avg = sum / student.grades.length;
         res.status(200).json({ average_of_grades: avg, success: true });
     }
     catch (error: any) {
