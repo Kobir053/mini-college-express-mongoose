@@ -29,7 +29,7 @@ export function getAverageOfStudentGrades(req, res, next) {
             }
             let sum = 0;
             student.grades.forEach((grade) => {
-                sum += grade;
+                sum += grade.grade;
             });
             const avg = sum / student.grades.length;
             res.status(200).json({ average: avg, success: true });

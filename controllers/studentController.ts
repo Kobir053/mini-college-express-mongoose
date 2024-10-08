@@ -13,17 +13,22 @@ export async function getStudentGrades (req: Request, res: Response, next: NextF
 
 export async function getAverageOfStudentGrades (req: Request, res: Response, next: NextFunction) {
     try {
-        const student: User | null = await userModel.findById(req.body.id);
+        const student = await userModel.findById(req.body.id);
         if(student!.grades.length == 0){
             res.status(200).json({message: "you don't have any grades..", average: 0});
             return;
         }
-        
-        let sum = 0;
-        student!.grades.forEach((grade) => {
-            sum += grade;
-        })
-        const avg = sum/student!.grades.length;
+
+        const avg = await userModel.aggregate([
+            { $match: { _id: student!._id} },
+            { $project: { _id: 0, avgGrades: { $avg: "$grades.grade" } } }
+        ]);
+
+        // let sum = 0;
+        // student!.grades.forEach((grade: {subject: string, grade: number}) => {
+        //     sum += grade.grade;
+        // })
+        // const avg = sum/student!.grades.length;
         res.status(200).json({average: avg, success: true});
     } 
     catch (error: any) {

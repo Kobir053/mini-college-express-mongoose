@@ -154,9 +154,18 @@ export function getAverageOfGrades(req, res, next) {
                 res.status(404).json({ message: `could not find student with id ${studentId}` });
                 return;
             }
+            if (student.grades.length == 0) {
+                res.status(200).json({ message: "you don't have any grades..", average: 0 });
+                return;
+            }
+            const bla = yield userModel.aggregate([
+                { $match: { id: student._id } },
+                { $project: { _id: 0, avgGrades: { $avg: "$grades.grade" } } }
+            ]);
+            console.log(bla);
             let sum = 0;
             student.grades.forEach((grade) => {
-                sum += grade;
+                sum += grade.grade;
             });
             let avg = sum / student.grades.length;
             res.status(200).json({ average_of_grades: avg, success: true });
