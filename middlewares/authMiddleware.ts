@@ -61,6 +61,11 @@ export async function studentMiddleware (req: Request, res: Response, next: Next
             return;
         }
 
+        if(student.role !== "student"){
+            res.status(403).json({message: "you don't have access to students routes..."});
+            return;
+        }
+
         next();
     } 
     catch (error: any) {
