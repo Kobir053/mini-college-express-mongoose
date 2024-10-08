@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import userModel from "../models/userModel.js";
+import userModel, { User } from "../models/userModel.js";
 
 export async function getGradesOfStudent (req: Request, res: Response, next: NextFunction) {
 
@@ -10,7 +10,7 @@ export async function getGradesOfStudent (req: Request, res: Response, next: Nex
 
     try {
         const studentId = req.body.id;
-        const student = await userModel.findById(studentId);
+        const student: User | null = await userModel.findById(studentId);
 
         if(!student){
             res.status(404).json({message: `could not find user with id ${studentId}`});
@@ -109,7 +109,7 @@ export async function deleteGradeOfStudent (req: Request, res: Response, next: N
 
 export async function getAllStudents (req: Request, res: Response, next: NextFunction) {
     try {
-        const allStudents = await userModel.find({role: "student"});
+        const allStudents: User[] = await userModel.find({role: "student"});
         if(!allStudents){
             res.status(404).json({message: "didn't found any students"});
             return;
@@ -128,7 +128,7 @@ export async function deleteStudent (req: Request, res: Response, next: NextFunc
     }
     
     try {
-        const user = await userModel.findById(req.body.id);
+        const user: User | null = await userModel.findById(req.body.id);
         if(!user){
             res.status(404).json({message: "user are not found"});
             return;
@@ -155,7 +155,7 @@ export async function getAverageOfGrades (req: Request, res: Response, next: Nex
 
     try {
         const studentId = req.body.id;
-        const student = await userModel.findById(studentId);
+        const student: User | null = await userModel.findById(studentId);
 
         if(!student){
             res.status(404).json({message: `could not find student with id ${studentId}`});
