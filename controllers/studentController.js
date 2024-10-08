@@ -23,6 +23,10 @@ export function getAverageOfStudentGrades(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const student = yield userModel.findById(req.body.id);
+            if (student.grades.length == 0) {
+                res.status(200).json({ message: "you don't have any grades..", average: 0 });
+                return;
+            }
             let sum = 0;
             student.grades.forEach((grade) => {
                 sum += grade;

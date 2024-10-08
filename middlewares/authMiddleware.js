@@ -55,8 +55,13 @@ export function studentMiddleware(req, res, next) {
                 res.status(404).json({ message: "the token you have shows that you no longer register" });
                 return;
             }
-            if (student._id !== req.body.id) {
+            console.log(student.id);
+            if (student.id !== req.body.id) {
                 res.status(403).json({ message: "you don't have access to another students account!" });
+                return;
+            }
+            if (student.role !== "student") {
+                res.status(403).json({ message: "you don't have access to students routes..." });
                 return;
             }
             next();
